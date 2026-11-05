@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% block title %}Studio · AI Car Concept Lab{% endblock %}
+{% block content %}
+<section class="shell studio-shell" id="studioApp">
+    <div class="panel brief-panel">
+        <div class="panel-head">
+            <span class="eyebrow">Design Brief</span>
+            <h2>Shape the concept.</h2>
+            <p>Pick strong inputs. The more precise the brief, the more focused the concept.</p>
+        </div>
+
+        <form id="conceptForm" class="brief-form">
+            <div>
+                <label for="style">Style</label>
+                <select id="style" name="style" required>
+                    <option value="">Choose a style</option>
+                    <option>Hypercar</option>
+                    <option>Luxury</option>
+                    <option>Off-Road</option>
+                    <option>EV</option>
+                    <option>Retro-Future</option>
+                    <option>Street</option>
+                </select>
+            </div>
+            <div>
+                <label for="material">Primary Material</label>
+                <select id="material" name="material" required>
+                    <option value="">Choose a material</option>
+                    <option>Carbon Fiber</option>
+                    <option>Aluminum</option>
+                    <option>Titanium</option>
+                    <option>Recycled Composite</option>
+                    <option>Glass &amp; Metal</option>
+                    <option>Mixed Performance</option>
+                </select>
+            </div>
+            <div>
+                <label for="occasion">Occasion</label>
+                <select id="occasion" name="occasion" required>
+                    <option value="">Choose a use case</option>
+                    <option>Daily Drive</option>
+                    <option>Track Day</option>
+                    <option>Adventure</option>
+                    <option>Collector Reveal</option>
+                    <option>City Tech</option>
+                    <option>Luxury Tourer</option>
+                </select>
+            </div>
+            <div class="color-grid">
+                <label>Primary Colour
+                    <input type="color" id="primaryColor" name="primary_color" value="#1d4ed8">
+                </label>
+                <label>Accent Colour
+                    <input type="color" id="accentColor" name="accent_color" value="#f97316">
+                </label>
+            </div>
+            <div>
+                <label for="inspiration">Inspiration</label>
+                <textarea id="inspiration" name="inspiration" rows="4"
+                    placeholder="Example: Tokyo neon rain, desert eclipse, aurora over ice highways"
+                    required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary full" id="generateBtn">Verify &amp; Generate Car
+                Concept</button>
+            <p id="formError" class="form-error" aria-live="polite"></p>
+            <p class="form-note">This version adds hCaptcha before the AI call, so the brief only reaches generation
+                after a human check passes.</p>
+        </form>
+    </div>
+
+    <div class="panel result-panel" id="resultPanel">
+        <div class="empty-state" id="emptyState">
+            <span class="eyebrow">Output Panel</span>
+            <h2>Your concept will appear here.</h2>
+            <p>Generate once to see the car name, positioning, concept render, specs, and colorway system.</p>
+        </div>
+
+        <div class="loading-state hidden" id="loadingState">
+            <span class="eyebrow">Generating</span>
+            <h2>Assembling your future vehicle...</h2>
+            <p id="loaderText" class="loader-text">Querying AI…</p>
+            <div class="loader-bar"><span></span></div>
+        </div>
+
+        <div class="hidden" id="resultState">
+            <div class="result-header">
+                <div>
+                    <span class="eyebrow">AI Car Concept</span>
+                    <h2 id="carName"></h2>
+                    <p id="tagline" class="lead"></p>
+                </div>
+                <div class="price-pill" id="retailPrice"></div>
+            </div>
+
+            <div class="media-grid">
+                <div class="render-card">
+                    <img id="conceptImage" alt="AI car concept render">
+                    <div class="image-actions">
+                        <p id="imageStatus" class="form-note">Concept image will render after the text concept appears.
+                        </p>
+                        <button type="button" class="ghost-btn" id="regenerateImageBtn">Regenerate Image ↺</button>
+                    </div>
+                </div>
+                <div class="svg-card">
+                    <div class="svg-toolbar">
+                        <strong>Live Colorway Explorer</strong>
+                        <div id="swatchButtons" class="swatch-buttons"></div>
+                    </div>
+                    <div id="carSvgMount"></div>
+                </div>
+            </div>
+
+            <p id="description" class="description"></p>
+
+            <div class="spec-grid">
+                <div class="spec-card">
+                    <h3>Materials</h3>
+                    <ul id="materials"></ul>
+                </div>
+                <div class="spec-card">
+                    <h3>Features</h3>
+                    <ul id="features"></ul>
+                </div>
+                <div class="spec-card">
+                    <h3>Powertrain</h3>
+                    <p id="powertrain"></p>
+                </div>
+                <div class="spec-card">
+                    <h3>Cockpit</h3>
+                    <p id="cockpitTheme"></p>
+                </div>
+                <div class="spec-card">
+                    <h3>Target Driver</h3>
+                    <p id="targetDriver"></p>
+                </div>
+                <div class="spec-card">
+                    <h3>Style Tags</h3>
+                    <div id="styleTags" class="tags"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="captcha-modal hidden" id="captchaModal" aria-hidden="true">
+    <div class="captcha-card">
+        <div class="captcha-head">
+            <div>
+                <span class="eyebrow">Security Check</span>
+                <h3>Verify you're human</h3>
+            </div>
+            <button type="button" class="ghost-btn" id="cancelCaptcha">Cancel</button>
+        </div>
+        <p class="captcha-copy">The AI call is protected so free usage stays available for real people.</p>
+        <div id="hcaptchaWidget"></div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/studio.js') }}"></script>
+{% endblock %}

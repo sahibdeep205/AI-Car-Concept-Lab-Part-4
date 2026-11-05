@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}History · AI Car Concept Lab{% endblock %}
+{% block content %}
+<section class="shell history-shell">
+    <div class="history-head">
+        <div>
+            <span class="eyebrow">Session Gallery</span>
+            <h1>Review your generated car concepts.</h1>
+            <p>Compare naming, positioning, colorways, and design direction across all concepts in this session.</p>
+        </div>
+        {% if designs %}
+        <button class="btn btn-secondary" id="clearHistoryBtn">Clear History</button>
+        {% endif %}
+    </div>
+
+    {% if designs %}
+    <div class="history-grid">
+        {% for item in designs %}
+        <article class="history-card">
+            <img src="{{ item.image_url }}" alt="{{ item.name }} concept image">
+            <div class="history-content">
+                <div class="row-space">
+                    <h3>{{ item.name }}</h3>
+                    <span class="history-time">{{ item.timestamp }}</span>
+                </div>
+                <p class="lead small-lead">{{ item.tagline }}</p>
+                <p class="history-desc">{{ item.description }}</p>
+                <div class="tags">
+                    {% for tag in item.style_tags %}<span class="tag">{{ tag }}</span>{% endfor %}
+                </div>
+                <div class="swatch-row">
+                    {% for cw in item.colorways %}
+                    <div class="swatch-card">
+                        <strong>{{ cw.name }}</strong>
+                        <div class="mini-swatches">
+                            <span style="background:{{ cw.body }}"></span>
+                            <span style="background:{{ cw.accent }}"></span>
+                            <span style="background:{{ cw.wheels }}"></span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="brief-summary">{{ item.brief.style }} · {{ item.brief.material }} · {{ item.brief.occasion
+                    }}</div>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-history glow-card">
+        <div class="emoji">🚗</div>
+        <h2>No concepts yet</h2>
+        <p>Generate your first futuristic car in the studio and it will appear here automatically.</p>
+        <a href="{{ url_for('studio') }}" class="btn btn-primary">Open Studio</a>
+    </div>
+    {% endif %}
+</section>
+<script>
+    const clearBtn = document.getElementById('clearHistoryBtn');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', async () => {
+            await fetch('/clear-history', { method: 'POST' });
+            location.reload();
+        });
+    }
+</script>
+{% endblock %}
